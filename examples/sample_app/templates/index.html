@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask 示例应用 - 任务管理器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .task-list {
+            margin-top: 20px;
+        }
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 5px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .task.completed {
+            background-color: #e6f7e6;
+            text-decoration: line-through;
+            color: #666;
+        }
+        .task-form {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .task-input {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .task-button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .action-button {
+            padding: 5px 10px;
+            background-color: #ddd;
+            color: #333;
+            border: none;
+            border-radius: 4px;
+            margin-left: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .action-button.delete {
+            background-color: #f44336;
+            color: white;
+        }
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        .flash {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flask 任务管理器</h1>
+    
+    <!-- 显示 Flash 消息 -->
+    {% if get_flashed_messages() %}
+    <div class="flash-messages">
+        {% for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- 添加新任务表单 -->
+    <form class="task-form" action="/add" method="post">
+        <input type="text" name="title" placeholder="输入新任务..." class="task-input" required>
+        <button type="submit" class="task-button">添加任务</button>
+    </form>
+    
+    <!-- 任务列表 -->
+    <div class="task-list">
+        <h2>任务列表</h2>
+        {% if tasks %}
+            {% for task in tasks %}
+                <div class="task {% if task.done %}completed{% endif %}">
+                    <span>{{ task.title }}</span>
+                    <div>
+                        <a href="/toggle/{{ task.id }}" class="action-button">{% if task.done %}标记为未完成{% else %}标记为完成{% endif %}</a>
+                        <a href="/delete/{{ task.id }}" class="action-button delete">删除</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>目前没有任务。添加一些任务吧!</p>
+        {% endif %}
+    </div>
+</body>
+</html>
